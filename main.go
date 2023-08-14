@@ -1,7 +1,13 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/ihksanghazi/api-online-course/databases"
+)
 
 func main() {
-	fmt.Println("Hello World")
+	databases.ConnectDB()
+
+	fmt.Println("Sukses Koneksi")
 }
