@@ -18,7 +18,7 @@ func ConnectDB() {
 	time_zone := os.Getenv("DB_TIMEZONE")
 
 	dsn := "host=" + host + " user=" + user + " password=" + pass + " dbname=" + db_name + " port=" + port + " sslmode=disable TimeZone=" + time_zone
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{SkipDefaultTransaction: true})
 
 	if err != nil {
 		panic("Error : " + err.Error())
