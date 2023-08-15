@@ -1,7 +1,8 @@
 package databases
 
 import (
-	"github.com/ihksanghazi/api-online-course/utils"
+	"os"
+
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -9,12 +10,12 @@ import (
 var DB *gorm.DB
 
 func ConnectDB() {
-	host := utils.GetToEnv("DB_HOST")
-	user := utils.GetToEnv("DB_USER")
-	pass := utils.GetToEnv("DB_PASSWORD")
-	db_name := utils.GetToEnv("DB_NAME")
-	port := utils.GetToEnv("DB_PORT")
-	time_zone := utils.GetToEnv("DB_TIMEZONE")
+	host := os.Getenv("DB_HOST")
+	user := os.Getenv("DB_USER")
+	pass := os.Getenv("DB_PASSWORD")
+	db_name := os.Getenv("DB_NAME")
+	port := os.Getenv("DB_PORT")
+	time_zone := os.Getenv("DB_TIMEZONE")
 
 	dsn := "host=" + host + " user=" + user + " password=" + pass + " dbname=" + db_name + " port=" + port + " sslmode=disable TimeZone=" + time_zone
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
