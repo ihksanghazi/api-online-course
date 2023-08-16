@@ -23,11 +23,11 @@ DELETE http://localhost:5000/api/categories/171d6bff-9e11-49a5-91a7-e0d348cdfd9f
 
 
 
-### Testing
+### Register User
 POST  http://localhost:5000/api/users/register
 
 {
-  "username":"Sandy",
-  "email":"sandy@gmail.com",
+  "username":"Ihksan",
+  "email":"ihksan@gmail.com",
   "password":"123"
 }

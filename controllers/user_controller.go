@@ -24,9 +24,15 @@ func NewUserContollers(UserService services.UserServices) UserControllers {
 
 func (u *UserControllersImpl) Register(w http.ResponseWriter, r *http.Request) {
 	var user models.User
-	// read data json from body
+	// membaca data json
 	utils.ReadJSON(r, &user)
 
-	utils.ResponseJSON(w, http.StatusOK, "Testing", user)
+	userResponse, err := u.UserService.Register(&user)
+	if err != nil {
+		utils.ResponseError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	utils.ResponseJSON(w, http.StatusOK, "Testing", userResponse)
 
 }
