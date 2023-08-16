@@ -10,6 +10,7 @@ import (
 
 type UserControllers interface {
 	Register(w http.ResponseWriter, r *http.Request)
+	Login(w http.ResponseWriter, r *http.Request)
 }
 
 type UserControllersImpl struct {
@@ -34,5 +35,9 @@ func (u *UserControllersImpl) Register(w http.ResponseWriter, r *http.Request) {
 	}
 
 	utils.ResponseJSON(w, http.StatusOK, "Testing", userResponse)
+
+}
+
+func (u *UserControllersImpl) Login(w http.ResponseWriter, r *http.Request) {
 
 }

@@ -10,6 +10,7 @@ import (
 
 type UserServices interface {
 	Register(modelUser *models.User) (models.User, error)
+	Login(modelUser *models.User) (models.User, error)
 }
 
 type UserServicesImpl struct {
@@ -52,4 +53,8 @@ func (u *UserServicesImpl) Register(modelUser *models.User) (models.User, error)
 	})
 
 	return *modelUser, err
+}
+
+func (u *UserServicesImpl) Login(modelUser *models.User) (models.User, error) {
+	return *modelUser, nil
 }
