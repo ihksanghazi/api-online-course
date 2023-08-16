@@ -1,22 +1,33 @@
 ### Get All Categories
-GET http://localhost:5000/api/category
+GET http://localhost:5000/api/categories
 
 ### GET Category By Id
-GET http://localhost:5000/api/category/07ff876a-1b7f-4aca-8ed8-bbc42240a2c0
+GET http://localhost:5000/api/categories/07ff876a-1b7f-4aca-8ed8-bbc42240a2c0
 
 ### Create One Category
-POST http://localhost:5000/api/category
+POST http://localhost:5000/api/categories
 
 {
   "name":"Business"
 }
 
 ### Update Category By Id
-PUT http://localhost:5000/api/category/171d6bff-9e11-49a5-91a7-e0d348cdfd9f
+PUT http://localhost:5000/api/categories/171d6bff-9e11-49a5-91a7-e0d348cdfd9f
 
 {
   "name":"Accounting"
 }
 
 ### Deleted Category By Id
-DELETE http://localhost:5000/api/category/171d6bff-9e11-49a5-91a7-e0d348cdfd9f
+DELETE http://localhost:5000/api/categories/171d6bff-9e11-49a5-91a7-e0d348cdfd9f
+
+
+
+### Register User
+POST  http://localhost:5000/api/users/register
+
+{
+  "username":"Ihksan",
+  "email":"ihksan@gmail.com",
+  "password":"123"
+}
