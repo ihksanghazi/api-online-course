@@ -12,7 +12,7 @@ func UserRouters() *chi.Mux {
 	userService := services.NewUserServices()
 	userControllers := controllers.NewUserContollers(userService)
 
-	r.Post("/register", userControllers.Login)
+	r.Post("/register", userControllers.Register)
 
 	return r
 }

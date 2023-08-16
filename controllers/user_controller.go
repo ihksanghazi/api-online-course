@@ -9,7 +9,7 @@ import (
 )
 
 type UserControllers interface {
-	Login(w http.ResponseWriter, r *http.Request)
+	Register(w http.ResponseWriter, r *http.Request)
 }
 
 type UserControllersImpl struct {
@@ -22,7 +22,7 @@ func NewUserContollers(UserService services.UserServices) UserControllers {
 	}
 }
 
-func (u *UserControllersImpl) Login(w http.ResponseWriter, r *http.Request) {
+func (u *UserControllersImpl) Register(w http.ResponseWriter, r *http.Request) {
 	var user models.User
 	// read data json from body
 	utils.ReadJSON(r, &user)
