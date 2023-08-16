@@ -5,6 +5,12 @@ import (
 	"net/http"
 )
 
+type Response struct {
+	Code    int         `json:"code"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
+}
+
 func ReadJSON(r *http.Request, result interface{}) error {
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(result)
@@ -12,11 +18,11 @@ func ReadJSON(r *http.Request, result interface{}) error {
 	return err
 }
 
-func ResponseJSON(w http.ResponseWriter, code int, status string, payload interface{}) error {
-	response := map[string]interface{}{
-		"code":   code,
-		"status": status,
-		"data":   payload,
+func ResponseJSON(w http.ResponseWriter, code int, message string, payload interface{}) error {
+	response := Response{
+		Code:    code,
+		Message: message,
+		Data:    payload,
 	}
 
 	result, err := json.Marshal(response)

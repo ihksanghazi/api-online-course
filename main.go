@@ -39,7 +39,8 @@ func main() {
 
 	r := chi.NewRouter()
 
-	r.Mount("/api/category", routers.CategoryRouter())
+	r.Mount("/api/categories", routers.CategoryRouter())
+	r.Mount("/api/users", routers.UserRouters())
 
 	http.ListenAndServe(":5000", r)
 }
