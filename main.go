@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
@@ -20,7 +19,6 @@ func main() {
 
 	// connect db
 	databases.ConnectDB()
-	fmt.Println("Sukses Koneksi")
 
 	//migrations table
 	databases.DB.AutoMigrate(
