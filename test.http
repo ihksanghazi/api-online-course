@@ -1,12 +1,12 @@
 ### Get All Categories
 GET http://localhost:5000/api/categories
-Access-Token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImYzNGJjZWE2LTlkMDktNDg4OS1iYWI2LThkODU0OTNlMzYyNCIsImV4cCI6MTY5MjI0MTYxM30.7UshJH6rk3V6X1fb81yJLQVfqQEwwU1f25YjmDRFhQc
 
 ### GET Category By Id
 GET http://localhost:5000/api/categories/07ff876a-1b7f-4aca-8ed8-bbc42240a2c0
 
 ### Create One Category
 POST http://localhost:5000/api/categories
+Access-Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjkzZGEyNTY2LTZlNTktNDVjMC05NDNkLWI0ZDI1NTg5Y2Y2YSIsImV4cCI6MTY5MjI2NTExNH0.cGx5nY7wih1GJ0_HHD50QJGc8K_n-dOO99EIIRsWLx8
 
 {
   "name":"Business"
@@ -14,6 +14,7 @@ POST http://localhost:5000/api/categories
 
 ### Update Category By Id
 PUT http://localhost:5000/api/categories/171d6bff-9e11-49a5-91a7-e0d348cdfd9f
+Access-Token:
 
 {
   "name":"Accounting"
@@ -21,22 +22,23 @@ PUT http://localhost:5000/api/categories/171d6bff-9e11-49a5-91a7-e0d348cdfd9f
 
 ### Deleted Category By Id
 DELETE http://localhost:5000/api/categories/171d6bff-9e11-49a5-91a7-e0d348cdfd9f
-
+Access-Token:
 
 
 ### Register User
 POST  http://localhost:5000/api/users/register
 
 {
-  "username":"Ihksan",
-  "email":"ihksan@gmail.com",
-  "password":"123"
+  "username":"rizqy",
+  "email":"rizqy@gmail.com",
+  "password":"123",
+  "role":""
 }
 
 ### Login User
 POST  http://localhost:5000/api/users/login
 
 {
-  "email":"ihksan@gmail.com",
+  "email":"rizqy@gmail.com",
   "password":"123"
 }
