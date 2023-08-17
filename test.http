@@ -36,9 +36,12 @@ POST  http://localhost:5000/api/users/register
 }
 
 ### Login User
-POST  http://localhost:5000/api/users/login
+POST http://localhost:5000/api/users/login
 
 {
-  "email":"rizqy@gmail.com",
+  "email":"azhi@gmail.com",
   "password":"123"
 }
+
+### Get Token if user already loggedin
+GET http://localhost:5000/api/users/token

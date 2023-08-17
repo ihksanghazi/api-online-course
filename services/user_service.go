@@ -15,6 +15,7 @@ import (
 type UserServices interface {
 	Register(modelUser *models.User) (models.User, error)
 	Login(modelUser *models.User) (string, string, error)
+	GetToken(refreshToken string, userModel *models.User) (string, error)
 }
 
 type UserServicesImpl struct {
@@ -117,4 +118,42 @@ func (u *UserServicesImpl) Login(modelUser *models.User) (string, string, error)
 	})
 
 	return RefreshToken, AccessToken, err
+}
+
+func (u *UserServicesImpl) GetToken(refreshToken string, userModel *models.User) (string, error) {
+
+	var errorResult error
+	var tokenResult string
+
+	// cek refresh token di database
+	if err := u.DB.Where("refresh_token = ?", refreshToken).First(&userModel).Error; err != nil {
+		errorResult = err
+	}
+
+	// verify refresh token
+	token, errToken := jwt.ParseWithClaims(refreshToken, &middlewares.ClaimsToken{}, func(token *jwt.Token) (interface{}, error) {
+		return []byte(os.Getenv("REFRESH_JWT_KEY")), nil
+	})
+	if errToken != nil {
+		errorResult = errToken
+	}
+
+	if _, ok := token.Claims.(*middlewares.ClaimsToken); ok && token.Valid {
+		// Jika refresh token valid, Buat access token
+		claimsAccessToken := middlewares.ClaimsToken{
+			Id: userModel.ID.String(),
+			RegisteredClaims: jwt.RegisteredClaims{
+				ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Second * 20)),
+			},
+		}
+
+		tokenAccessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claimsAccessToken)
+		resultAccessToken, errSigned := tokenAccessToken.SignedString([]byte(os.Getenv("ACCESS_JWT_KEY")))
+		if errSigned != nil {
+			errorResult = errSigned
+		}
+		tokenResult = resultAccessToken
+	}
+
+	return tokenResult, errorResult
 }
