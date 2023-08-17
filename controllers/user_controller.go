@@ -85,5 +85,14 @@ func (u *UserControllersImpl) GetToken(w http.ResponseWriter, r *http.Request) {
 }
 
 func (u *UserControllersImpl) Logout(w http.ResponseWriter, r *http.Request) {
+	// Menghapus Cookie
+	cookie := http.Cookie{
+		Name:     "refresh_token",
+		HttpOnly: true,
+		MaxAge:   -1,
+	}
 
+	http.SetCookie(w, &cookie)
+
+	utils.ResponseJSON(w, http.StatusOK, "you are logged out", nil)
 }

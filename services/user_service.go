@@ -16,7 +16,6 @@ type UserServices interface {
 	Register(modelUser *models.User) (models.User, error)
 	Login(modelUser *models.User) (string, string, error)
 	GetToken(refreshToken string, userModel *models.User) (string, error)
-	Logout()
 }
 
 type UserServicesImpl struct {
@@ -157,8 +156,4 @@ func (u *UserServicesImpl) GetToken(refreshToken string, userModel *models.User)
 	}
 
 	return tokenResult, errorResult
-}
-
-func (u *UserServicesImpl) Logout() {
-
 }
