@@ -77,36 +77,34 @@ func (u *UserServicesImpl) Login(modelUser *models.User) (string, string, error)
 		}
 
 		// membuat refresh token
-		claimsRefreshToken := middlewares.ClaimsRefreshToken{
-			Id:       user.ID.String(),
-			Username: user.Username,
+		claimsRefreshToken := middlewares.ClaimsToken{
+			Id: user.ID.String(),
 			RegisteredClaims: jwt.RegisteredClaims{
 				ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 24)),
 			},
 		}
 
 		tokenRefreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claimsRefreshToken)
-		resultRefreshToken, err := tokenRefreshToken.SignedString([]byte(os.Getenv("MY_JWT_KEY")))
+		resultRefreshToken, err := tokenRefreshToken.SignedString([]byte(os.Getenv("REFRESH_JWT_KEY")))
 		if err != nil {
 			return err
 		}
 
 		// simpan refresh token ke dalam database
-		if err := tx.Model(&user).Where("email = ?", modelUser.Email).Update("refresh_token", resultRefreshToken).Error; err != nil {
+		if err := tx.Model(&user).Where("id = ?", user.ID).Update("refresh_token", resultRefreshToken).Error; err != nil {
 			return err
 		}
 
-		// membuat response token
-		claimsAccessToken := middlewares.ClaimsAccessToken{
-			Id:    user.ID.String(),
-			Email: user.Email,
+		// membuat access token
+		claimsAccessToken := middlewares.ClaimsToken{
+			Id: user.ID.String(),
 			RegisteredClaims: jwt.RegisteredClaims{
-				ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 24)),
+				ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Second * 30)),
 			},
 		}
 
 		tokenAccessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claimsAccessToken)
-		resultAccessToken, err := tokenAccessToken.SignedString([]byte(os.Getenv("MY_JWT_KEY")))
+		resultAccessToken, err := tokenAccessToken.SignedString([]byte(os.Getenv("ACCESS_JWT_KEY")))
 		if err != nil {
 			return err
 		}

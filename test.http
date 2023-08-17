@@ -1,5 +1,6 @@
 ### Get All Categories
 GET http://localhost:5000/api/categories
+Access-Token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImYzNGJjZWE2LTlkMDktNDg4OS1iYWI2LThkODU0OTNlMzYyNCIsImV4cCI6MTY5MjI0MTYxM30.7UshJH6rk3V6X1fb81yJLQVfqQEwwU1f25YjmDRFhQc
 
 ### GET Category By Id
 GET http://localhost:5000/api/categories/07ff876a-1b7f-4aca-8ed8-bbc42240a2c0
