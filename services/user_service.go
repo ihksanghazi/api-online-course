@@ -2,7 +2,11 @@ package services
 
 import (
 	"errors"
+	"os"
+	"time"
 
+	"github.com/golang-jwt/jwt/v5"
+	"github.com/ihksanghazi/api-online-course/middlewares"
 	"github.com/ihksanghazi/api-online-course/models"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
@@ -10,7 +14,7 @@ import (
 
 type UserServices interface {
 	Register(modelUser *models.User) (models.User, error)
-	Login(modelUser *models.User) (models.User, error)
+	Login(modelUser *models.User) (string, string, error)
 }
 
 type UserServicesImpl struct {
@@ -55,6 +59,64 @@ func (u *UserServicesImpl) Register(modelUser *models.User) (models.User, error)
 	return *modelUser, err
 }
 
-func (u *UserServicesImpl) Login(modelUser *models.User) (models.User, error) {
-	return *modelUser, nil
+func (u *UserServicesImpl) Login(modelUser *models.User) (string, string, error) {
+	var user models.User
+	var AccessToken string
+	var RefreshToken string
+
+	// mulai transaksi
+	err := u.DB.Transaction(func(tx *gorm.DB) error {
+		// cari berdasarkan email
+		if err := tx.Where("email = ?", modelUser.Email).First(&user).Error; err != nil {
+			return err
+		}
+
+		// cek hash password
+		if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(modelUser.Password)); err != nil {
+			return errors.New("wrong password")
+		}
+
+		// membuat refresh token
+		claimsRefreshToken := middlewares.ClaimsRefreshToken{
+			Id:       user.ID.String(),
+			Username: user.Username,
+			RegisteredClaims: jwt.RegisteredClaims{
+				ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 24)),
+			},
+		}
+
+		tokenRefreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claimsRefreshToken)
+		resultRefreshToken, err := tokenRefreshToken.SignedString([]byte(os.Getenv("MY_JWT_KEY")))
+		if err != nil {
+			return err
+		}
+
+		// simpan refresh token ke dalam database
+		if err := tx.Model(&user).Where("email = ?", modelUser.Email).Update("refresh_token", resultRefreshToken).Error; err != nil {
+			return err
+		}
+
+		// membuat response token
+		claimsAccessToken := middlewares.ClaimsAccessToken{
+			Id:    user.ID.String(),
+			Email: user.Email,
+			RegisteredClaims: jwt.RegisteredClaims{
+				ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 24)),
+			},
+		}
+
+		tokenAccessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claimsAccessToken)
+		resultAccessToken, err := tokenAccessToken.SignedString([]byte(os.Getenv("MY_JWT_KEY")))
+		if err != nil {
+			return err
+		}
+
+		AccessToken = resultAccessToken
+		RefreshToken = resultRefreshToken
+
+		// commit
+		return nil
+	})
+
+	return RefreshToken, AccessToken, err
 }

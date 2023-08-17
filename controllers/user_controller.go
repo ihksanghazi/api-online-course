@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/ihksanghazi/api-online-course/models"
 	"github.com/ihksanghazi/api-online-course/services"
@@ -39,5 +40,27 @@ func (u *UserControllersImpl) Register(w http.ResponseWriter, r *http.Request) {
 }
 
 func (u *UserControllersImpl) Login(w http.ResponseWriter, r *http.Request) {
+	// read body json
+	var user models.User
+	utils.ReadJSON(r, &user)
+
+	refreshtoken, responseToken, err := u.UserService.Login(&user)
+	if err != nil {
+		utils.ResponseError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	// set refresh token ke dalam cookie
+	cookie := http.Cookie{
+		Name:     "refresh_token",
+		Value:    refreshtoken,
+		HttpOnly: true,
+		MaxAge:   int(time.Hour * 24),
+	}
+
+	http.SetCookie(w, &cookie)
+
+	// mengembalikan response token dalam bentuk json
+	utils.ResponseJSON(w, http.StatusOK, "your accessToken", responseToken)
 
 }
