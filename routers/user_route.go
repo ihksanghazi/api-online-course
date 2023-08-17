@@ -16,6 +16,6 @@ func UserRouters() *chi.Mux {
 	r.Post("/register", userControllers.Register)
 	r.Post("/login", userControllers.Login)
 	r.Get("/token", userControllers.GetToken)
-
+	r.Delete("/logout", userControllers.Logout)
 	return r
 }
