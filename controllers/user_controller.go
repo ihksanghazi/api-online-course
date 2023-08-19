@@ -99,5 +99,12 @@ func (u *UserControllersImpl) Logout(w http.ResponseWriter, r *http.Request) {
 }
 
 func (u *UserControllersImpl) GetAllUsers(w http.ResponseWriter, r *http.Request) {
+	var users []models.User
 
+	responseUsers, err := u.UserService.GetAllUsers(&users)
+	if err != nil {
+		utils.ResponseError(w, http.StatusInternalServerError, err.Error())
+	}
+
+	utils.ResponseJSON(w, http.StatusOK, "Successfully Get All Users", responseUsers)
 }
