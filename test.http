@@ -2,26 +2,26 @@
 GET http://localhost:5000/api/categories
 
 ### GET Category By Id
-GET http://localhost:5000/api/categories/07ff876a-1b7f-4aca-8ed8-bbc42240a2c0
+GET http://localhost:5000/api/categories/2d6e0bbc-aede-4de1-aeb1-99a083f025e2
 
 ### Create One Category
 POST http://localhost:5000/api/categories
-Access-Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjkzZGEyNTY2LTZlNTktNDVjMC05NDNkLWI0ZDI1NTg5Y2Y2YSIsImV4cCI6MTY5MjI2NTExNH0.cGx5nY7wih1GJ0_HHD50QJGc8K_n-dOO99EIIRsWLx8
+Access-Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjRiNDRhOTc5LTkyNTctNGMwZC05MGRmLTQ3NjE1MGNmZjdkMyIsImV4cCI6MTY5MjQ0NTkyMX0.h1GoJVZ6PXiPbRpIJLxOLCqnT-9-jF0WbAjJbNZ3mj0
 
 {
-  "name":"Business"
+  "name":"Golang"
 }
 
 ### Update Category By Id
-PUT http://localhost:5000/api/categories/171d6bff-9e11-49a5-91a7-e0d348cdfd9f
+PUT http://localhost:5000/api/categories/2d6e0bbc-aede-4de1-aeb1-99a083f025e2
 Access-Token:
 
 {
-  "name":"Accounting"
+  "name":"Java"
 }
 
 ### Deleted Category By Id
-DELETE http://localhost:5000/api/categories/171d6bff-9e11-49a5-91a7-e0d348cdfd9f
+DELETE http://localhost:5000/api/categories/2d6e0bbc-aede-4de1-aeb1-99a083f025e2
 Access-Token:
 
 
@@ -39,7 +39,7 @@ POST  http://localhost:5000/api/users/register
 POST http://localhost:5000/api/users/login
 
 {
-  "email":"azhi@gmail.com",
+  "email":"ihksan@gmail.com",
   "password":"123"
 }
 
