@@ -48,3 +48,9 @@ GET http://localhost:5000/api/users/token
 
 ### Logout User
 DELETE http://localhost:5000/api/users/logout
+
+### GET ALL USERS
+GET http://localhost:5000/api/users
+
+### GET USER BY ID
+GET http://localhost:5000/api/users/4b44a979-9257-4c0d-90df-476150cff7d3

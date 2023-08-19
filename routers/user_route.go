@@ -13,9 +13,13 @@ func UserRouters() *chi.Mux {
 	userService := services.NewUserServices(databases.DB)
 	userControllers := controllers.NewUserContollers(userService)
 
+	// auth
 	r.Post("/register", userControllers.Register)
 	r.Post("/login", userControllers.Login)
 	r.Get("/token", userControllers.GetToken)
 	r.Delete("/logout", userControllers.Logout)
+
+	r.Get("/", userControllers.GetAllUsers)
+	r.Get("/{id}", userControllers.GetUserById)
 	return r
 }
