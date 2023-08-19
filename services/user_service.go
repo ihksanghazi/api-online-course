@@ -17,6 +17,7 @@ type UserServices interface {
 	Login(modelUser *models.User) (string, string, error)
 	GetToken(refreshToken string, userModel *models.User) (string, error)
 	GetAllUsers(modelUsers *[]models.User) ([]models.User, error)
+	GetUserById(modelUser *models.User, id string) (models.User, error)
 }
 
 type UserServicesImpl struct {
@@ -167,4 +168,14 @@ func (u *UserServicesImpl) GetAllUsers(modelUsers *[]models.User) ([]models.User
 	}
 
 	return *modelUsers, resultErr
+}
+
+func (u *UserServicesImpl) GetUserById(modelUser *models.User, id string) (models.User, error) {
+	var resultErr error
+
+	if err := u.DB.First(&modelUser, "id = ?", id).Error; err != nil {
+		resultErr = err
+	}
+
+	return *modelUser, resultErr
 }

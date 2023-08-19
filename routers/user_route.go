@@ -20,5 +20,6 @@ func UserRouters() *chi.Mux {
 	r.Delete("/logout", userControllers.Logout)
 
 	r.Get("/", userControllers.GetAllUsers)
+	r.Get("/{id}", userControllers.GetUserById)
 	return r
 }

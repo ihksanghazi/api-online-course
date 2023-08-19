@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/ihksanghazi/api-online-course/models"
 	"github.com/ihksanghazi/api-online-course/services"
 	"github.com/ihksanghazi/api-online-course/utils"
@@ -15,6 +16,7 @@ type UserControllers interface {
 	GetToken(w http.ResponseWriter, r *http.Request)
 	Logout(w http.ResponseWriter, r *http.Request)
 	GetAllUsers(w http.ResponseWriter, r *http.Request)
+	GetUserById(w http.ResponseWriter, r *http.Request)
 }
 
 type UserControllersImpl struct {
@@ -104,7 +106,21 @@ func (u *UserControllersImpl) GetAllUsers(w http.ResponseWriter, r *http.Request
 	responseUsers, err := u.UserService.GetAllUsers(&users)
 	if err != nil {
 		utils.ResponseError(w, http.StatusInternalServerError, err.Error())
+		return
 	}
 
 	utils.ResponseJSON(w, http.StatusOK, "Successfully Get All Users", responseUsers)
+}
+
+func (u *UserControllersImpl) GetUserById(w http.ResponseWriter, r *http.Request) {
+	var user models.User
+	id := chi.URLParam(r, "id")
+
+	responseUser, err := u.UserService.GetUserById(&user, id)
+	if err != nil {
+		utils.ResponseError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	utils.ResponseJSON(w, http.StatusOK, "Successfully Get User", responseUser)
 }
