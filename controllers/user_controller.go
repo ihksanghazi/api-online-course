@@ -14,6 +14,7 @@ type UserControllers interface {
 	Login(w http.ResponseWriter, r *http.Request)
 	GetToken(w http.ResponseWriter, r *http.Request)
 	Logout(w http.ResponseWriter, r *http.Request)
+	GetAllUsers(w http.ResponseWriter, r *http.Request)
 }
 
 type UserControllersImpl struct {
@@ -95,4 +96,8 @@ func (u *UserControllersImpl) Logout(w http.ResponseWriter, r *http.Request) {
 	http.SetCookie(w, &cookie)
 
 	utils.ResponseJSON(w, http.StatusOK, "you are logged out", nil)
+}
+
+func (u *UserControllersImpl) GetAllUsers(w http.ResponseWriter, r *http.Request) {
+
 }
