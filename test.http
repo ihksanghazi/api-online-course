@@ -6,7 +6,7 @@ GET http://localhost:5000/api/categories/2d6e0bbc-aede-4de1-aeb1-99a083f025e2
 
 ### Create One Category
 POST http://localhost:5000/api/categories
-Access-Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjRiNDRhOTc5LTkyNTctNGMwZC05MGRmLTQ3NjE1MGNmZjdkMyIsImV4cCI6MTY5MjQ0NTkyMX0.h1GoJVZ6PXiPbRpIJLxOLCqnT-9-jF0WbAjJbNZ3mj0
+Access-Token: 
 
 {
   "name":"Golang"
