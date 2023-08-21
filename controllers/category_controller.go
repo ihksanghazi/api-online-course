@@ -112,6 +112,7 @@ func (c *CategoryControllerImpl) Delete(w http.ResponseWriter, r *http.Request) 
 	categoryResponse, errQuery := c.CategoryService.Delete(&category, id)
 	if errQuery != nil {
 		utils.ResponseError(w, http.StatusInternalServerError, errQuery.Error())
+		return
 	}
 
 	utils.ResponseJSON(w, http.StatusOK, "successfully deleted data", categoryResponse)
