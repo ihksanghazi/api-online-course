@@ -2,26 +2,26 @@
 GET http://localhost:5000/api/categories
 
 ### GET Category By Id
-GET http://localhost:5000/api/categories/2d6e0bbc-aede-4de1-aeb1-99a083f025e2
+GET http://localhost:5000/api/categories/02f20603-df22-4881-af40-44bf02b8f677
 
 ### Create One Category
 POST http://localhost:5000/api/categories
 Access-Token: 
 
 {
-  "name":"Golang"
+  "name":"PHP"
 }
 
 ### Update Category By Id
-PUT http://localhost:5000/api/categories/2d6e0bbc-aede-4de1-aeb1-99a083f025e2
+PUT http://localhost:5000/api/categories/2ddfd633-283b-4d52-8d5a-c1ab4bcf41d7
 Access-Token:
 
 {
-  "name":"Java"
+  "name":"Code Igniter"
 }
 
 ### Deleted Category By Id
-DELETE http://localhost:5000/api/categories/2d6e0bbc-aede-4de1-aeb1-99a083f025e2
+DELETE http://localhost:5000/api/categories/2ddfd633-283b-4d52-8d5a-c1ab4bcf41d7
 Access-Token:
 
 

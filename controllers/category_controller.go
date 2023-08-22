@@ -31,89 +31,87 @@ func NewCategoryController(categoryService services.CategoryService, Validator *
 }
 
 func (c *CategoryControllerImpl) FindAll(w http.ResponseWriter, r *http.Request) {
-
-	var categories []models.Category
-
-	categories, err := c.CategoryService.FindAll(&categories)
+	categories, err := c.CategoryService.FindAll()
 	if err != nil {
 		utils.ResponseError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	utils.ResponseJSON(w, http.StatusOK, "successfully fetching all data", categories)
+	utils.ResponseJSON(w, http.StatusOK, "Successfully Fetching All Categories", categories)
 }
 
 func (c *CategoryControllerImpl) FindById(w http.ResponseWriter, r *http.Request) {
 	// ambil parameter id
 	id := chi.URLParam(r, "id")
 
-	var category models.Category
-
-	ResponseCategory, errQuery := c.CategoryService.FindById(&category, id)
+	ResponseCategory, errQuery := c.CategoryService.FindById(id)
 	if errQuery != nil {
 		utils.ResponseError(w, http.StatusInternalServerError, errQuery.Error())
 		return
 	}
 
-	utils.ResponseJSON(w, http.StatusOK, "successfully Fetch Data", ResponseCategory)
+	utils.ResponseJSON(w, http.StatusOK, "Successfully Fetch Category", ResponseCategory)
 }
 
 func (c *CategoryControllerImpl) Create(w http.ResponseWriter, r *http.Request) {
-
-	var category models.Category
+	var request models.CategoryRequest
 
 	// ambil request json
-	utils.ReadJSON(r, &category)
-
-	// validasi
-	if err := c.Validator.Var(&category.Name, "required,min=3"); err != nil {
+	if err := utils.ReadJSON(r, &request); err != nil {
 		utils.ResponseError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	ResponseCategory, err := c.CategoryService.Create(&category)
+	// validasi
+	if valMessage := utils.Validation(c.Validator, request); len(valMessage) > 0 {
+		utils.ResponseError(w, http.StatusInternalServerError, valMessage)
+		return
+	}
+
+	ResponseCategory, err := c.CategoryService.Create(&request)
 	if err != nil {
 		utils.ResponseError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	utils.ResponseJSON(w, http.StatusCreated, "successfully created data", ResponseCategory)
+	utils.ResponseJSON(w, http.StatusCreated, "Successfully Created Category", ResponseCategory)
 }
 
 func (c *CategoryControllerImpl) Update(w http.ResponseWriter, r *http.Request) {
 	// ambil params id
 	id := chi.URLParam(r, "id")
 
-	var category models.Category
+	var request models.CategoryRequest
 
 	// Ambil Request JSON
-	utils.ReadJSON(r, &category)
-
-	// validasi
-	if err := c.Validator.Var(&category.Name, "required,min=3"); err != nil {
+	if err := utils.ReadJSON(r, &request); err != nil {
 		utils.ResponseError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	ResponseCategory, errQuery := c.CategoryService.Update(&category, id)
+	// validasi
+	if errMessage := utils.Validation(c.Validator, request); len(errMessage) > 0 {
+		utils.ResponseError(w, http.StatusInternalServerError, errMessage)
+		return
+	}
+
+	ResponseCategory, errQuery := c.CategoryService.Update(&request, id)
 	if errQuery != nil {
 		utils.ResponseError(w, http.StatusInternalServerError, errQuery.Error())
 		return
 	}
 
-	utils.ResponseJSON(w, http.StatusOK, "successfully updated data", ResponseCategory)
+	utils.ResponseJSON(w, http.StatusOK, "Successfully Updated Category", ResponseCategory)
 }
 
 func (c *CategoryControllerImpl) Delete(w http.ResponseWriter, r *http.Request) {
 	id := chi.URLParam(r, "id")
 
-	var category models.Category
-
-	categoryResponse, errQuery := c.CategoryService.Delete(&category, id)
+	errQuery := c.CategoryService.Delete(id)
 	if errQuery != nil {
 		utils.ResponseError(w, http.StatusInternalServerError, errQuery.Error())
 		return
 	}
 
-	utils.ResponseJSON(w, http.StatusOK, "successfully deleted data", categoryResponse)
+	utils.ResponseJSON(w, http.StatusOK, "Successfully Deleted Category", nil)
 }

@@ -6,11 +6,11 @@ import (
 )
 
 type CategoryService interface {
-	FindAll(categories *[]models.Category) ([]models.Category, error)
-	FindById(category *models.Category, id string) (models.Category, error)
-	Create(CategoryModel *models.Category) (models.Category, error)
-	Update(category *models.Category, id string) (models.Category, error)
-	Delete(category *models.Category, id string) (models.Category, error)
+	FindAll() ([]models.CategoryResponse, error)
+	FindById(id string) (models.CategoryWithClassResponse, error)
+	Create(request *models.CategoryRequest) (models.CategoryResponse, error)
+	Update(request *models.CategoryRequest, id string) (models.CategoryResponse, error)
+	Delete(id string) error
 }
 
 type CategeryServiceImpl struct {
@@ -23,20 +23,30 @@ func NewCategoryService(DB *gorm.DB) CategoryService {
 	}
 }
 
-func (c *CategeryServiceImpl) FindAll(categories *[]models.Category) ([]models.Category, error) {
-	err := c.DB.Find(&categories).Error
-	return *categories, err
+func (c *CategeryServiceImpl) FindAll() ([]models.CategoryResponse, error) {
+	var categories []models.Category
+	var response []models.CategoryResponse
+
+	err := c.DB.Model(&categories).Find(&response).Error
+	return response, err
 }
 
-func (c *CategeryServiceImpl) FindById(category *models.Category, id string) (models.Category, error) {
-	err := c.DB.Find(&category, "id = ?", id).First(&category).Error
-	return *category, err
+func (c *CategeryServiceImpl) FindById(id string) (models.CategoryWithClassResponse, error) {
+	var category models.Category
+	var response models.CategoryWithClassResponse
+
+	err := c.DB.Model(&category).Find(&category, "id = ?", id).First(&response).Error
+	return response, err
 }
 
-func (c *CategeryServiceImpl) Create(CategoryModel *models.Category) (models.Category, error) {
+func (c *CategeryServiceImpl) Create(request *models.CategoryRequest) (models.CategoryResponse, error) {
+	var category models.Category
+	category.Name = request.Name
+	var response models.CategoryResponse
+
 	// transaction
 	err := c.DB.Transaction(func(tx *gorm.DB) error {
-		if err := tx.Create(&CategoryModel).Error; err != nil {
+		if err := tx.Model(&category).Create(&category).First(&response, "id = ?", category.ID).Error; err != nil {
 			// return any error will rollback
 			return err
 		}
@@ -44,13 +54,16 @@ func (c *CategeryServiceImpl) Create(CategoryModel *models.Category) (models.Cat
 		return nil
 	})
 
-	return *CategoryModel, err
+	return response, err
 }
 
-func (c *CategeryServiceImpl) Update(category *models.Category, id string) (models.Category, error) {
+func (c *CategeryServiceImpl) Update(request *models.CategoryRequest, id string) (models.CategoryResponse, error) {
+	var category models.Category
+	category.Name = request.Name
+	var response models.CategoryResponse
 	// transaction
 	err := c.DB.Transaction(func(tx *gorm.DB) error {
-		if err := tx.Model(&category).Where("id = ?", id).Update("name", category.Name).Error; err != nil {
+		if err := tx.Model(&category).Where("id = ?", id).Update("name", category.Name).First(&response, "id = ?", id).Error; err != nil {
 			// return any error will rollback
 			return err
 		}
@@ -58,10 +71,11 @@ func (c *CategeryServiceImpl) Update(category *models.Category, id string) (mode
 		return nil
 	})
 
-	return *category, err
+	return response, err
 }
 
-func (c *CategeryServiceImpl) Delete(category *models.Category, id string) (models.Category, error) {
+func (c *CategeryServiceImpl) Delete(id string) error {
+	var category models.Category
 	// transaction
 	err := c.DB.Transaction(func(tx *gorm.DB) error {
 		if err := tx.Delete(&category, "id = ?", id).Error; err != nil {
@@ -72,5 +86,5 @@ func (c *CategeryServiceImpl) Delete(category *models.Category, id string) (mode
 		return nil
 	})
 
-	return *category, err
+	return err
 }

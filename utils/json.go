@@ -32,9 +32,9 @@ func ResponseJSON(w http.ResponseWriter, code int, message string, payload inter
 	return err
 }
 
-func ResponseError(w http.ResponseWriter, code int, errorMessage string) error {
+func ResponseError(w http.ResponseWriter, code int, errorMessage interface{}) error {
 	response := map[string]interface{}{
-		"Message": errorMessage,
+		"message": errorMessage,
 	}
 
 	result, err := json.Marshal(response)
