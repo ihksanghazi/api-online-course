@@ -8,8 +8,8 @@ import (
 type CategoryService interface {
 	FindAll() ([]models.CategoryResponse, error)
 	FindById(id string) (models.CategoryWithClassResponse, error)
-	Create(request *models.CategoryRequest) (models.CategoryResponse, error)
-	Update(request *models.CategoryRequest, id string) (models.CategoryResponse, error)
+	Create(request *models.CategoryRequest) (models.Category, error)
+	Update(request *models.CategoryRequest, id string) (models.Category, error)
 	Delete(id string) error
 }
 
@@ -35,18 +35,17 @@ func (c *CategeryServiceImpl) FindById(id string) (models.CategoryWithClassRespo
 	var category models.Category
 	var response models.CategoryWithClassResponse
 
-	err := c.DB.Model(&category).Find(&category, "id = ?", id).First(&response).Error
+	err := c.DB.Model(&category).Find(&response, "id = ?", id).Error
 	return response, err
 }
 
-func (c *CategeryServiceImpl) Create(request *models.CategoryRequest) (models.CategoryResponse, error) {
+func (c *CategeryServiceImpl) Create(request *models.CategoryRequest) (models.Category, error) {
 	var category models.Category
 	category.Name = request.Name
-	var response models.CategoryResponse
 
 	// transaction
 	err := c.DB.Transaction(func(tx *gorm.DB) error {
-		if err := tx.Model(&category).Create(&category).First(&response, "id = ?", category.ID).Error; err != nil {
+		if err := tx.Model(&category).Create(&category).Error; err != nil {
 			// return any error will rollback
 			return err
 		}
@@ -54,16 +53,15 @@ func (c *CategeryServiceImpl) Create(request *models.CategoryRequest) (models.Ca
 		return nil
 	})
 
-	return response, err
+	return category, err
 }
 
-func (c *CategeryServiceImpl) Update(request *models.CategoryRequest, id string) (models.CategoryResponse, error) {
+func (c *CategeryServiceImpl) Update(request *models.CategoryRequest, id string) (models.Category, error) {
 	var category models.Category
 	category.Name = request.Name
-	var response models.CategoryResponse
 	// transaction
 	err := c.DB.Transaction(func(tx *gorm.DB) error {
-		if err := tx.Model(&category).Where("id = ?", id).Update("name", category.Name).First(&response, "id = ?", id).Error; err != nil {
+		if err := tx.Model(&category).Where("id = ?", id).Update("name", category.Name).Error; err != nil {
 			// return any error will rollback
 			return err
 		}
@@ -71,7 +69,7 @@ func (c *CategeryServiceImpl) Update(request *models.CategoryRequest, id string)
 		return nil
 	})
 
-	return response, err
+	return category, err
 }
 
 func (c *CategeryServiceImpl) Delete(id string) error {

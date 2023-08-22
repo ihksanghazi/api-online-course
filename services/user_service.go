@@ -13,11 +13,11 @@ import (
 )
 
 type UserServices interface {
-	Register(modelUser *models.User) (models.User, error)
-	Login(modelUser *models.User) (string, string, error)
-	GetToken(refreshToken string, userModel *models.User) (string, error)
-	GetAllUsers(modelUsers *[]models.User) ([]models.User, error)
-	GetUserById(modelUser *models.User, id string) (models.User, error)
+	Register(request *models.RegisterRequest) (models.User, error)
+	Login(request *models.LoginRequest) (string, string, error)
+	GetToken(refreshToken string) (string, error)
+	GetAllUsers() ([]models.UserResponse, error)
+	GetUserById(id string) (models.UserResponse, error)
 }
 
 type UserServicesImpl struct {
@@ -30,11 +30,16 @@ func NewUserServices(DB *gorm.DB) UserServices {
 	}
 }
 
-func (u *UserServicesImpl) Register(modelUser *models.User) (models.User, error) {
+func (u *UserServicesImpl) Register(request *models.RegisterRequest) (models.User, error) {
+	var user models.User
+	user.Username = request.Username
+	user.Email = request.Email
+	user.Password = request.Password
+	user.Role = request.Role
 	// transaction
 	err := u.DB.Transaction(func(tx *gorm.DB) error {
 		// Cek apakah alamat email sudah ada dalam Database
-		if err := tx.Where("email = ?", modelUser.Email).First(&modelUser).Error; err == nil {
+		if err := tx.Model(&user).First(&user, "email = ?", user.Email).Error; err == nil {
 			// User dengan alamat email sudah ada, kembalikan error
 			return errors.New("email already exists")
 		} else if !errors.Is(err, gorm.ErrRecordNotFound) {
@@ -43,26 +48,26 @@ func (u *UserServicesImpl) Register(modelUser *models.User) (models.User, error)
 		}
 
 		// Hash password menggunakan bcrypt
-		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(modelUser.Password), bcrypt.DefaultCost)
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 		if err != nil {
 			return err
 		}
 
 		// set password yang sudah terenskripsi
-		modelUser.Password = string(hashedPassword)
+		user.Password = string(hashedPassword)
 
 		// Tidak ada user dengan alamat email yang sama, lanjutkan pembuatan user baru
-		if err := tx.Create(&modelUser).Error; err != nil {
+		if err := tx.Model(&user).Create(&user).Error; err != nil {
 			return err
 		}
 
 		return nil
 	})
 
-	return *modelUser, err
+	return user, err
 }
 
-func (u *UserServicesImpl) Login(modelUser *models.User) (string, string, error) {
+func (u *UserServicesImpl) Login(request *models.LoginRequest) (string, string, error) {
 	var user models.User
 	var AccessToken string
 	var RefreshToken string
@@ -70,12 +75,12 @@ func (u *UserServicesImpl) Login(modelUser *models.User) (string, string, error)
 	// mulai transaksi
 	err := u.DB.Transaction(func(tx *gorm.DB) error {
 		// cari berdasarkan email
-		if err := tx.Where("email = ?", modelUser.Email).First(&user).Error; err != nil {
+		if err := tx.Model(&user).First(&user, "email = ?", request.Email).Error; err != nil {
 			return err
 		}
 
 		// cek hash password
-		if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(modelUser.Password)); err != nil {
+		if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(request.Password)); err != nil {
 			return errors.New("wrong password")
 		}
 
@@ -122,13 +127,13 @@ func (u *UserServicesImpl) Login(modelUser *models.User) (string, string, error)
 	return RefreshToken, AccessToken, err
 }
 
-func (u *UserServicesImpl) GetToken(refreshToken string, userModel *models.User) (string, error) {
-
+func (u *UserServicesImpl) GetToken(refreshToken string) (string, error) {
+	var user models.User
 	var errorResult error
 	var tokenResult string
 
 	// cek refresh token di database
-	if err := u.DB.Where("refresh_token = ?", refreshToken).First(&userModel).Error; err != nil {
+	if err := u.DB.Model(&user).First(&user, "refresh_token = ?", refreshToken).Error; err != nil {
 		errorResult = err
 	}
 
@@ -143,7 +148,7 @@ func (u *UserServicesImpl) GetToken(refreshToken string, userModel *models.User)
 	if _, ok := token.Claims.(*middlewares.ClaimsToken); ok && token.Valid {
 		// Jika refresh token valid, Buat access token
 		claimsAccessToken := middlewares.ClaimsToken{
-			Id: userModel.ID.String(),
+			Id: user.ID.String(),
 			RegisteredClaims: jwt.RegisteredClaims{
 				ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Second * 20)),
 			},
@@ -160,22 +165,26 @@ func (u *UserServicesImpl) GetToken(refreshToken string, userModel *models.User)
 	return tokenResult, errorResult
 }
 
-func (u *UserServicesImpl) GetAllUsers(modelUsers *[]models.User) ([]models.User, error) {
+func (u *UserServicesImpl) GetAllUsers() ([]models.UserResponse, error) {
+	var user []models.User
+	var response []models.UserResponse
 	var resultErr error
 
-	if err := u.DB.Find(&modelUsers).Error; err != nil {
+	if err := u.DB.Model(&user).Find(&response, "role != ?", "admin").Error; err != nil {
 		resultErr = err
 	}
 
-	return *modelUsers, resultErr
+	return response, resultErr
 }
 
-func (u *UserServicesImpl) GetUserById(modelUser *models.User, id string) (models.User, error) {
+func (u *UserServicesImpl) GetUserById(id string) (models.UserResponse, error) {
+	var user models.User
+	var response models.UserResponse
 	var resultErr error
 
-	if err := u.DB.First(&modelUser, "id = ?", id).Error; err != nil {
+	if err := u.DB.Model(&user).First(&response, "id = ? AND role != ?", id, "admin").Error; err != nil {
 		resultErr = err
 	}
 
-	return *modelUser, resultErr
+	return response, resultErr
 }

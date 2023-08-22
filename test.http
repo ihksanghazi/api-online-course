@@ -2,14 +2,14 @@
 GET http://localhost:5000/api/categories
 
 ### GET Category By Id
-GET http://localhost:5000/api/categories/02f20603-df22-4881-af40-44bf02b8f677
+GET http://localhost:5000/api/categories/e27d46fb-e3ec-4fcc-a5d5-6052c2e5df15
 
 ### Create One Category
 POST http://localhost:5000/api/categories
 Access-Token: 
 
 {
-  "name":"PHP"
+  "name":"Golang"
 }
 
 ### Update Category By Id
@@ -29,17 +29,17 @@ Access-Token:
 POST  http://localhost:5000/api/users/register
 
 {
-  "username":"rizqy",
-  "email":"rizqy@gmail.com",
+  "username":"sandy",
+  "email":"sandy@gmail.com",
   "password":"123",
-  "role":""
+  "role":"admin"
 }
 
 ### Login User
 POST http://localhost:5000/api/users/login
 
 {
-  "email":"ihksan@gmail.com",
+  "email":"sandy@gmail.com",
   "password":"123"
 }
 
@@ -53,4 +53,4 @@ DELETE http://localhost:5000/api/users/logout
 GET http://localhost:5000/api/users
 
 ### GET USER BY ID
-GET http://localhost:5000/api/users/4b44a979-9257-4c0d-90df-476150cff7d3
+GET http://localhost:5000/api/users/318d1c83-070d-4b2c-98e4-9011b8101058

@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-playground/validator/v10"
 	"github.com/ihksanghazi/api-online-course/models"
 	"github.com/ihksanghazi/api-online-course/services"
 	"github.com/ihksanghazi/api-online-course/utils"
@@ -21,35 +22,61 @@ type UserControllers interface {
 
 type UserControllersImpl struct {
 	UserService services.UserServices
+	Validation  *validator.Validate
 }
 
-func NewUserContollers(UserService services.UserServices) UserControllers {
+func NewUserContollers(UserService services.UserServices, Validation *validator.Validate) UserControllers {
 	return &UserControllersImpl{
 		UserService: UserService,
+		Validation:  Validation,
 	}
 }
 
 func (u *UserControllersImpl) Register(w http.ResponseWriter, r *http.Request) {
-	var user models.User
-	// membaca data json
-	utils.ReadJSON(r, &user)
+	var request models.RegisterRequest
+	// binding json req
+	if err := utils.ReadJSON(r, &request); err != nil {
+		utils.ResponseError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
 
-	userResponse, err := u.UserService.Register(&user)
+	// validasi
+	if errMessage := utils.Validation(u.Validation, request); len(errMessage) > 0 {
+		utils.ResponseError(w, http.StatusInternalServerError, errMessage)
+		return
+	}
+
+	userResponse, err := u.UserService.Register(&request)
 	if err != nil {
 		utils.ResponseError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	utils.ResponseJSON(w, http.StatusOK, "Testing", userResponse)
+	var response models.UserResponse
+	response.ID = userResponse.ID
+	response.Username = userResponse.Username
+	response.Email = userResponse.Email
+	response.Role = userResponse.Role
+
+	utils.ResponseJSON(w, http.StatusOK, "Successfully Register New User", response)
 
 }
 
 func (u *UserControllersImpl) Login(w http.ResponseWriter, r *http.Request) {
-	// read body json
-	var user models.User
-	utils.ReadJSON(r, &user)
+	var request models.LoginRequest
+	// binding json req
+	if err := utils.ReadJSON(r, &request); err != nil {
+		utils.ResponseError(w, http.StatusInternalServerError, err.Error())
+		return
+	}
 
-	refreshtoken, responseToken, err := u.UserService.Login(&user)
+	// validasi
+	if errMessage := utils.Validation(u.Validation, request); len(errMessage) > 0 {
+		utils.ResponseError(w, http.StatusInternalServerError, errMessage)
+		return
+	}
+
+	refreshtoken, AccessToken, err := u.UserService.Login(&request)
 	if err != nil {
 		utils.ResponseError(w, http.StatusInternalServerError, err.Error())
 		return
@@ -65,8 +92,8 @@ func (u *UserControllersImpl) Login(w http.ResponseWriter, r *http.Request) {
 
 	http.SetCookie(w, &cookie)
 
-	// mengembalikan response token dalam bentuk json
-	utils.ResponseJSON(w, http.StatusOK, "your accessToken", responseToken)
+	// mengembalikan Access token dalam bentuk json
+	utils.ResponseJSON(w, http.StatusOK, "Your AccessToken", AccessToken)
 
 }
 
@@ -77,7 +104,7 @@ func (u *UserControllersImpl) GetToken(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	accessToken, errGetToken := u.UserService.GetToken(cookie.Value, &models.User{})
+	accessToken, errGetToken := u.UserService.GetToken(cookie.Value)
 	if errGetToken != nil {
 		utils.ResponseError(w, http.StatusUnauthorized, "Unauthorized")
 		return
@@ -101,9 +128,7 @@ func (u *UserControllersImpl) Logout(w http.ResponseWriter, r *http.Request) {
 }
 
 func (u *UserControllersImpl) GetAllUsers(w http.ResponseWriter, r *http.Request) {
-	var users []models.User
-
-	responseUsers, err := u.UserService.GetAllUsers(&users)
+	responseUsers, err := u.UserService.GetAllUsers()
 	if err != nil {
 		utils.ResponseError(w, http.StatusInternalServerError, err.Error())
 		return
@@ -113,10 +138,9 @@ func (u *UserControllersImpl) GetAllUsers(w http.ResponseWriter, r *http.Request
 }
 
 func (u *UserControllersImpl) GetUserById(w http.ResponseWriter, r *http.Request) {
-	var user models.User
 	id := chi.URLParam(r, "id")
 
-	responseUser, err := u.UserService.GetUserById(&user, id)
+	responseUser, err := u.UserService.GetUserById(id)
 	if err != nil {
 		utils.ResponseError(w, http.StatusInternalServerError, err.Error())
 		return
