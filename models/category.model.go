@@ -29,5 +29,5 @@ type CategoryWithClassResponse struct {
 	Name      string    `json:"name"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
-	Classes   []Class   `gorm:"foreignKey:CategoryID" json:"classes"`
+	Classes   []Class   `gorm:"foreignKey:CategoryID;references:ID" json:"classes"`
 }

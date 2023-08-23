@@ -182,7 +182,7 @@ func (u *UserServicesImpl) GetUserById(id string) (models.UserResponse, error) {
 	var response models.UserResponse
 	var resultErr error
 
-	if err := u.DB.Model(&user).First(&response, "id = ? AND role != ?", id, "admin").Error; err != nil {
+	if err := u.DB.Model(&user).Preload("Classes").Preload("UserClasses").Find(&response, "id = ? AND role != ?", id, "admin").Error; err != nil {
 		resultErr = err
 	}
 
