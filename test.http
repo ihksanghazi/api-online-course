@@ -54,3 +54,8 @@ GET http://localhost:5000/api/users
 
 ### GET USER BY ID
 GET http://localhost:5000/api/users/318d1c83-070d-4b2c-98e4-9011b8101058
+
+
+
+### CREATE CLASS
+POST http://localhost:5000/api/classes

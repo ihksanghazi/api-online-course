@@ -41,6 +41,7 @@ func main() {
 
 	r.Mount("/api/categories", routers.CategoryRouter())
 	r.Mount("/api/users", routers.UserRouters())
+	r.Mount("/api/classes", routers.ClassRouter())
 
 	http.ListenAndServe(":5000", r)
 }
