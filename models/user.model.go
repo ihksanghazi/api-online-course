@@ -13,8 +13,8 @@ type User struct {
 	// Relation
 	MessagesSent      []Message          `gorm:"foreignKey:SenderID"`
 	MessagesReceived  []Message          `gorm:"foreignKey:RecipientID"`
-	Classes           []Class            `gorm:"foreignKey:CreatedByID"`
-	UserClasses       []UserClass        `gorm:"foreignKey:UserID"`
+	Classes           []Class            `gorm:"foreignKey:CreatedByID;references:ID"`
+	UserClasses       []UserClass        `gorm:"foreignKey:UserID;references:ID"`
 	Discussions       []Discussion       `gorm:"foreignKey:UserID"`
 	UserQuizResponses []UserQuizResponse `gorm:"foreignKey:UserID"`
 }
@@ -32,10 +32,12 @@ type LoginRequest struct {
 }
 
 type UserResponse struct {
-	ID           uuid.UUID `json:"id"`
-	Username     string    `json:"username"`
-	Email        string    `json:"email"`
-	Role         string    `json:"role"`
-	RefreshToken string    `json:"refresh_token"`
-	ProfileUrl   string    `json:"profile_url"`
+	ID           uuid.UUID   `json:"id"`
+	Username     string      `json:"username"`
+	Email        string      `json:"email"`
+	Role         string      `json:"role"`
+	RefreshToken string      `json:"refresh_token"`
+	ProfileUrl   string      `json:"profile_url"`
+	Classes      []Class     `gorm:"foreignKey:CreatedByID;references:ID" json:"my_teaching_class"`
+	UserClasses  []UserClass `gorm:"foreignKey:UserID;references:ID" json:"my_class"`
 }

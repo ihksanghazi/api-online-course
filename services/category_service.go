@@ -35,7 +35,7 @@ func (c *CategeryServiceImpl) FindById(id string) (models.CategoryWithClassRespo
 	var category models.Category
 	var response models.CategoryWithClassResponse
 
-	err := c.DB.Model(&category).Find(&response, "id = ?", id).Error
+	err := c.DB.Model(&category).Preload("Classes").Find(&response, "id = ?", id).Error
 	return response, err
 }
 

@@ -2,7 +2,7 @@
 GET http://localhost:5000/api/categories
 
 ### GET Category By Id
-GET http://localhost:5000/api/categories/e27d46fb-e3ec-4fcc-a5d5-6052c2e5df15
+GET http://localhost:5000/api/categories/03970acc-86de-4171-902a-ea4b5c014286
 
 ### Create One Category
 POST http://localhost:5000/api/categories
@@ -39,7 +39,7 @@ POST  http://localhost:5000/api/users/register
 POST http://localhost:5000/api/users/login
 
 {
-  "email":"sandy@gmail.com",
+  "email":"azhi@gmail.com",
   "password":"123"
 }
 
@@ -53,4 +53,19 @@ DELETE http://localhost:5000/api/users/logout
 GET http://localhost:5000/api/users
 
 ### GET USER BY ID
-GET http://localhost:5000/api/users/318d1c83-070d-4b2c-98e4-9011b8101058
+GET http://localhost:5000/api/users/cf0d06e7-7168-4e50-be5a-9ec10a52cac9
+
+
+
+### CREATE CLASS
+POST http://localhost:5000/api/classes
+Access-Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNmMGQwNmU3LTcxNjgtNGU1MC1iZTVhLTllYzEwYTUyY2FjOSIsImV4cCI6MTY5MjgwMjAzOX0._HT_tsjU2T9Lnopl8xglyw3zQHE5o_nODkxr70MxurM
+
+{
+  "name":"Kelas Dasar Programming",
+  "created_by":"cf0d06e7-7168-4e50-be5a-9ec10a52cac9",
+  "category_id":"03970acc-86de-4171-902a-ea4b5c014286",
+  "description":"Contoh Description",
+  "thumbnail":"",
+  "trailer":""
+}
