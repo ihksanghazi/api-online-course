@@ -72,3 +72,6 @@ Access-Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNmMGQwNmU3LTcxNjgtN
 
 ### Get All Classes
 GET http://localhost:5000/api/classes
+
+### Get Class By Id
+GET http://localhost:5000/api/classes/892a76f0-1380-4905-9db7-a9d53d6bc3af

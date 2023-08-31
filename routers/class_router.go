@@ -20,6 +20,7 @@ func ClassRouter() *chi.Mux {
 	// guest
 	r.Group(func(r chi.Router) {
 		r.Get("/", classController.GetAll)
+		r.Get("/{id}", classController.GetById)
 	})
 
 	// teacher
