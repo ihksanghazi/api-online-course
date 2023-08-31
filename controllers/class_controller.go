@@ -59,5 +59,12 @@ func (c *ClassControllerImpl) Create(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *ClassControllerImpl) GetAll(w http.ResponseWriter, r *http.Request) {
+	classResponse, classError := c.ClassService.GetAll()
+	if classError != nil {
+		utils.ResponseError(w, http.StatusInternalServerError, classError.Error())
+		return
+	}
+
+	utils.ResponseJSON(w, http.StatusOK, "Success Get All Classes", classResponse)
 
 }

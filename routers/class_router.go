@@ -18,12 +18,16 @@ func ClassRouter() *chi.Mux {
 	classController := controllers.NewClassController(classService, validate)
 
 	// guest
-	r.Get("/", classController.GetAll)
+	r.Group(func(r chi.Router) {
+		r.Get("/", classController.GetAll)
+	})
 
 	// teacher
-	r.Use(middlewares.TokenMiddleware)
-	r.Use(middlewares.OnlyTeacherAdminMiddleware)
-	r.Post("/", classController.Create)
+	r.Group(func(r chi.Router) {
+		r.Use(middlewares.TokenMiddleware)
+		r.Use(middlewares.OnlyTeacherAdminMiddleware)
+		r.Post("/", classController.Create)
+	})
 
 	return r
 }

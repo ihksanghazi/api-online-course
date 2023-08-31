@@ -7,7 +7,7 @@ import (
 
 type ClassService interface {
 	Create(request models.ClassWebRequest) (models.Class, error)
-	GetAll(request models.ClassWebRequest) (models.Class, error)
+	GetAll() ([]models.Class, error)
 }
 
 func NewClassService(DB *gorm.DB) ClassService {
@@ -49,6 +49,10 @@ func (c *ClassServiceImpl) Create(request models.ClassWebRequest) (models.Class,
 	return class, errTransaction
 }
 
-func (c *ClassServiceImpl) GetAll(request models.ClassWebRequest) (models.Class, error) {
-	return models.Class{}, nil
+func (c *ClassServiceImpl) GetAll() ([]models.Class, error) {
+	var class []models.Class
+
+	errModel := c.DB.Model(&class).Find(&class).Error
+
+	return class, errModel
 }
