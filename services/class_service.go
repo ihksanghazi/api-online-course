@@ -9,7 +9,7 @@ type ClassService interface {
 	Create(request models.ClassWebRequest) (models.Class, error)
 	GetAll() ([]models.Class, error)
 	GetById(classId string) (models.Class, error)
-	AddClass() (models.UserClass, error)
+	AddClass(request models.UserClassWebRequest) (models.UserClassWebRequest, error)
 }
 
 func NewClassService(DB *gorm.DB) ClassService {
@@ -67,6 +67,18 @@ func (c *ClassServiceImpl) GetById(classId string) (models.Class, error) {
 	return class, errModel
 }
 
-func (c *ClassServiceImpl) AddClass() (models.UserClass, error) {
-	return models.UserClass{}, nil
+func (c *ClassServiceImpl) AddClass(request models.UserClassWebRequest) (models.UserClassWebRequest, error) {
+	var userClass models.UserClass
+	userClass.ClassID = request.ClassID
+	userClass.UserID = request.UserID
+	userClass.Role = "student"
+
+	errTransaction := c.DB.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Model(&userClass).Create(&userClass).Error; err != nil {
+			return err
+		}
+		return nil
+	})
+
+	return request, errTransaction
 }

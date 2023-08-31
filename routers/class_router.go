@@ -26,7 +26,7 @@ func ClassRouter() *chi.Mux {
 	// user
 	r.Group(func(r chi.Router) {
 		r.Use(middlewares.TokenMiddleware)
-		r.Get("/add", classController.Invite)
+		r.Post("/add", classController.Invite)
 	})
 
 	// teacher

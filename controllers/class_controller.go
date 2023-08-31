@@ -99,5 +99,18 @@ func (c *ClassControllerImpl) GetById(w http.ResponseWriter, r *http.Request) {
 }
 
 func (c *ClassControllerImpl) Invite(w http.ResponseWriter, r *http.Request) {
+	//bind json request
+	var request models.UserClassWebRequest
+	if errRequest := utils.ReadJSON(r, &request); errRequest != nil {
+		utils.ResponseError(w, http.StatusBadRequest, errRequest.Error())
+		return
+	}
 
+	classResponse, errResponse := c.ClassService.AddClass(request)
+	if errResponse != nil {
+		utils.ResponseError(w, http.StatusInternalServerError, errResponse.Error())
+		return
+	}
+
+	utils.ResponseJSON(w, http.StatusOK, "OK", classResponse)
 }
