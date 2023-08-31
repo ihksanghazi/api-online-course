@@ -16,6 +16,7 @@ type ClassController interface {
 	Create(w http.ResponseWriter, r *http.Request)
 	GetAll(w http.ResponseWriter, r *http.Request)
 	GetById(w http.ResponseWriter, r *http.Request)
+	Invite(w http.ResponseWriter, r *http.Request)
 }
 
 func NewClassController(Class services.ClassService, Validate *validator.Validate) ClassController {
@@ -94,5 +95,9 @@ func (c *ClassControllerImpl) GetById(w http.ResponseWriter, r *http.Request) {
 	}
 
 	utils.ResponseJSON(w, http.StatusOK, "Success Get Class", responseClass)
+
+}
+
+func (c *ClassControllerImpl) Invite(w http.ResponseWriter, r *http.Request) {
 
 }
