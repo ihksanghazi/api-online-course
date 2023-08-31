@@ -17,9 +17,18 @@ func ClassRouter() *chi.Mux {
 	classService := services.NewClassService(databases.DB)
 	classController := controllers.NewClassController(classService, validate)
 
-	r.Use(middlewares.TokenMiddleware)
-	r.Use(middlewares.OnlyTeacherAdminMiddleware)
-	r.Post("/", classController.Create)
+	// guest
+	r.Group(func(r chi.Router) {
+		r.Get("/", classController.GetAll)
+		r.Get("/{id}", classController.GetById)
+	})
+
+	// teacher
+	r.Group(func(r chi.Router) {
+		r.Use(middlewares.TokenMiddleware)
+		r.Use(middlewares.OnlyTeacherAdminMiddleware)
+		r.Post("/", classController.Create)
+	})
 
 	return r
 }

@@ -1,16 +1,21 @@
 package controllers
 
 import (
+	"errors"
 	"net/http"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/go-playground/validator/v10"
 	"github.com/ihksanghazi/api-online-course/models"
 	"github.com/ihksanghazi/api-online-course/services"
 	"github.com/ihksanghazi/api-online-course/utils"
+	"gorm.io/gorm"
 )
 
 type ClassController interface {
 	Create(w http.ResponseWriter, r *http.Request)
+	GetAll(w http.ResponseWriter, r *http.Request)
+	GetById(w http.ResponseWriter, r *http.Request)
 }
 
 func NewClassController(Class services.ClassService, Validate *validator.Validate) ClassController {
@@ -54,5 +59,40 @@ func (c *ClassControllerImpl) Create(w http.ResponseWriter, r *http.Request) {
 	response.Trailer = classResponse.Trailer
 
 	utils.ResponseJSON(w, http.StatusCreated, "Successfullty created Class", response)
+
+}
+
+func (c *ClassControllerImpl) GetAll(w http.ResponseWriter, r *http.Request) {
+	classResponse, classError := c.ClassService.GetAll()
+	if classError != nil {
+		utils.ResponseError(w, http.StatusInternalServerError, classError.Error())
+		return
+	}
+
+	utils.ResponseJSON(w, http.StatusOK, "Success Get All Classes", classResponse)
+
+}
+
+func (c *ClassControllerImpl) GetById(w http.ResponseWriter, r *http.Request) {
+	classId := chi.URLParam(r, "id")
+
+	if classId == "" {
+		utils.ResponseError(w, http.StatusBadRequest, "Bad Request")
+		return
+	}
+
+	responseClass, errClass := c.ClassService.GetById(classId)
+
+	if errors.Is(errClass, gorm.ErrRecordNotFound) {
+		utils.ResponseError(w, http.StatusNotFound, errClass.Error())
+		return
+	}
+
+	if errClass != nil {
+		utils.ResponseError(w, http.StatusInternalServerError, errClass.Error())
+		return
+	}
+
+	utils.ResponseJSON(w, http.StatusOK, "Success Get Class", responseClass)
 
 }

@@ -59,13 +59,19 @@ GET http://localhost:5000/api/users/cf0d06e7-7168-4e50-be5a-9ec10a52cac9
 
 ### CREATE CLASS
 POST http://localhost:5000/api/classes
-Access-Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNmMGQwNmU3LTcxNjgtNGU1MC1iZTVhLTllYzEwYTUyY2FjOSIsImV4cCI6MTY5MjgwMjAzOX0._HT_tsjU2T9Lnopl8xglyw3zQHE5o_nODkxr70MxurM
+Access-Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNmMGQwNmU3LTcxNjgtNGU1MC1iZTVhLTllYzEwYTUyY2FjOSIsImV4cCI6MTY5MzQ1ODUwMn0.xh-P7YTglovrZ8801QnX83V2r-j6NbtQoIaxQ0T7qj0
 
 {
-  "name":"Kelas Dasar Programming",
+  "name":"Kelas Dasar Javascript",
   "created_by":"cf0d06e7-7168-4e50-be5a-9ec10a52cac9",
   "category_id":"03970acc-86de-4171-902a-ea4b5c014286",
-  "description":"Contoh Description",
+  "description":"Javascript is Easy Peasey The Lemon Squezy",
   "thumbnail":"",
   "trailer":""
 }
+
+### Get All Classes
+GET http://localhost:5000/api/classes
+
+### Get Class By Id
+GET http://localhost:5000/api/classes/892a76f0-1380-4905-9db7-a9d53d6bc3af

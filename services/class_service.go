@@ -7,6 +7,8 @@ import (
 
 type ClassService interface {
 	Create(request models.ClassWebRequest) (models.Class, error)
+	GetAll() ([]models.Class, error)
+	GetById(classId string) (models.Class, error)
 }
 
 func NewClassService(DB *gorm.DB) ClassService {
@@ -46,4 +48,20 @@ func (c *ClassServiceImpl) Create(request models.ClassWebRequest) (models.Class,
 	})
 
 	return class, errTransaction
+}
+
+func (c *ClassServiceImpl) GetAll() ([]models.Class, error) {
+	var class []models.Class
+
+	errModel := c.DB.Model(&class).Find(&class).Error
+
+	return class, errModel
+}
+
+func (c *ClassServiceImpl) GetById(classId string) (models.Class, error) {
+	var class models.Class
+
+	errModel := c.DB.Model(&class).First(&class, "id = ?", classId).Error
+
+	return class, errModel
 }
