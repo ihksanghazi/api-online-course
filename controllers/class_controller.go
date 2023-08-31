@@ -11,6 +11,7 @@ import (
 
 type ClassController interface {
 	Create(w http.ResponseWriter, r *http.Request)
+	GetAll(w http.ResponseWriter, r *http.Request)
 }
 
 func NewClassController(Class services.ClassService, Validate *validator.Validate) ClassController {
@@ -54,5 +55,9 @@ func (c *ClassControllerImpl) Create(w http.ResponseWriter, r *http.Request) {
 	response.Trailer = classResponse.Trailer
 
 	utils.ResponseJSON(w, http.StatusCreated, "Successfullty created Class", response)
+
+}
+
+func (c *ClassControllerImpl) GetAll(w http.ResponseWriter, r *http.Request) {
 
 }
