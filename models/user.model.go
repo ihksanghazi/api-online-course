@@ -32,12 +32,11 @@ type LoginRequest struct {
 }
 
 type UserResponse struct {
-	ID           uuid.UUID   `json:"id"`
-	Username     string      `json:"username"`
-	Email        string      `json:"email"`
-	Role         string      `json:"role"`
-	RefreshToken string      `json:"refresh_token"`
-	ProfileUrl   string      `json:"profile_url"`
-	Classes      []Class     `gorm:"foreignKey:CreatedByID;references:ID" json:"my_teaching_class"`
-	UserClasses  []UserClass `gorm:"foreignKey:UserID;references:ID" json:"my_class"`
+	ID          uuid.UUID   `json:"id"`
+	Username    string      `json:"username"`
+	Email       string      `json:"email"`
+	Role        string      `json:"role"`
+	ProfileUrl  string      `json:"profile_url"`
+	Classes     []Class     `gorm:"foreignKey:CreatedByID;references:ID" json:"my_teaching_class"`
+	UserClasses []UserClass `gorm:"foreignKey:UserID;references:ID" json:"my_class"`
 }
