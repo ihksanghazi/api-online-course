@@ -16,8 +16,8 @@ type UserServices interface {
 	Register(request *models.RegisterRequest) (models.User, error)
 	Login(request *models.LoginRequest) (string, string, error)
 	GetToken(refreshToken string) (string, error)
-	GetAllUsers() ([]models.UserResponse, error)
-	GetUserById(id string) (models.UserResponse, error)
+	GetAllUsers() ([]models.UserWebResponse, error)
+	GetUserById(id string) (models.UserWebResponseDetail, error)
 }
 
 type UserServicesImpl struct {
@@ -165,26 +165,20 @@ func (u *UserServicesImpl) GetToken(refreshToken string) (string, error) {
 	return tokenResult, errorResult
 }
 
-func (u *UserServicesImpl) GetAllUsers() ([]models.UserResponse, error) {
+func (u *UserServicesImpl) GetAllUsers() ([]models.UserWebResponse, error) {
 	var user []models.User
-	var response []models.UserResponse
-	var resultErr error
+	var response []models.UserWebResponse
 
-	if err := u.DB.Model(&user).Find(&response, "role != ?", "admin").Error; err != nil {
-		resultErr = err
-	}
+	err := u.DB.Model(&user).Find(&response, "role != ?", "admin").Error
 
-	return response, resultErr
+	return response, err
 }
 
-func (u *UserServicesImpl) GetUserById(id string) (models.UserResponse, error) {
+func (u *UserServicesImpl) GetUserById(id string) (models.UserWebResponseDetail, error) {
 	var user models.User
-	var response models.UserResponse
-	var resultErr error
+	var response models.UserWebResponseDetail
 
-	if err := u.DB.Model(&user).Preload("Classes").Preload("UserClasses").Find(&response, "id = ? AND role != ?", id, "admin").Error; err != nil {
-		resultErr = err
-	}
+	err := u.DB.Model(&user).Preload("Classes.Category").Find(&response, "id = ? AND role != ?", id, "admin").Error
 
-	return response, resultErr
+	return response, err
 }

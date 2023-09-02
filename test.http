@@ -74,7 +74,7 @@ Access-Token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImNmMGQwNmU3LTcxNjgtN
 GET http://localhost:5000/api/classes
 
 ### Get Class By Id
-GET http://localhost:5000/api/classes/892a76f0-1380-4905-9db7-a9d53d6bc3af
+GET http://localhost:5000/api/classes/137eceea-811b-4743-b459-24030c0d8c72
 
 ### Invite User to Class
 POST http://localhost:5000/api/classes/add

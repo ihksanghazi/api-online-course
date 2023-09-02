@@ -51,15 +51,7 @@ func (c *ClassControllerImpl) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var response models.ClassWebResponse
-	response.Name = classResponse.Name
-	response.CreatedByID = classResponse.CreatedByID
-	response.CategoryID = classResponse.CategoryID
-	response.Description = classResponse.Description
-	response.Thumbnail = classResponse.Thumbnail
-	response.Trailer = classResponse.Trailer
-
-	utils.ResponseJSON(w, http.StatusCreated, "Successfullty created Class", response)
+	utils.ResponseJSON(w, http.StatusCreated, "Successfullty created Class", classResponse)
 
 }
 

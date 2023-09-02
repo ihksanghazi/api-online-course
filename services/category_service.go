@@ -6,10 +6,10 @@ import (
 )
 
 type CategoryService interface {
-	FindAll() ([]models.CategoryResponse, error)
-	FindById(id string) (models.CategoryWithClassResponse, error)
-	Create(request *models.CategoryRequest) (models.Category, error)
-	Update(request *models.CategoryRequest, id string) (models.Category, error)
+	FindAll() ([]models.CategoryWebResponse, error)
+	FindById(id string) (models.CategoryWebResponseDetail, error)
+	Create(request *models.CategoryRequest) (models.CategoryRequest, error)
+	Update(request *models.CategoryRequest, id string) (models.CategoryRequest, error)
 	Delete(id string) error
 }
 
@@ -23,23 +23,23 @@ func NewCategoryService(DB *gorm.DB) CategoryService {
 	}
 }
 
-func (c *CategeryServiceImpl) FindAll() ([]models.CategoryResponse, error) {
+func (c *CategeryServiceImpl) FindAll() ([]models.CategoryWebResponse, error) {
 	var categories []models.Category
-	var response []models.CategoryResponse
+	var response []models.CategoryWebResponse
 
 	err := c.DB.Model(&categories).Find(&response).Error
 	return response, err
 }
 
-func (c *CategeryServiceImpl) FindById(id string) (models.CategoryWithClassResponse, error) {
+func (c *CategeryServiceImpl) FindById(id string) (models.CategoryWebResponseDetail, error) {
 	var category models.Category
-	var response models.CategoryWithClassResponse
+	var response models.CategoryWebResponseDetail
 
-	err := c.DB.Model(&category).Preload("Classes").Find(&response, "id = ?", id).Error
+	err := c.DB.Model(&category).Preload("Classes.CreatedBy").Find(&response, "id = ?", id).Error
 	return response, err
 }
 
-func (c *CategeryServiceImpl) Create(request *models.CategoryRequest) (models.Category, error) {
+func (c *CategeryServiceImpl) Create(request *models.CategoryRequest) (models.CategoryRequest, error) {
 	var category models.Category
 	category.Name = request.Name
 
@@ -53,10 +53,10 @@ func (c *CategeryServiceImpl) Create(request *models.CategoryRequest) (models.Ca
 		return nil
 	})
 
-	return category, err
+	return *request, err
 }
 
-func (c *CategeryServiceImpl) Update(request *models.CategoryRequest, id string) (models.Category, error) {
+func (c *CategeryServiceImpl) Update(request *models.CategoryRequest, id string) (models.CategoryRequest, error) {
 	var category models.Category
 	category.Name = request.Name
 	// transaction
@@ -69,7 +69,7 @@ func (c *CategeryServiceImpl) Update(request *models.CategoryRequest, id string)
 		return nil
 	})
 
-	return category, err
+	return *request, err
 }
 
 func (c *CategeryServiceImpl) Delete(id string) error {

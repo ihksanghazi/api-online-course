@@ -52,7 +52,7 @@ func (u *UserControllersImpl) Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var response models.UserResponse
+	var response models.UserWebResponse
 	response.ID = userResponse.ID
 	response.Username = userResponse.Username
 	response.Email = userResponse.Email

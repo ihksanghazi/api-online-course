@@ -6,9 +6,9 @@ import (
 )
 
 type ClassService interface {
-	Create(request models.ClassWebRequest) (models.Class, error)
-	GetAll() ([]models.Class, error)
-	GetById(classId string) (models.Class, error)
+	Create(request models.ClassWebRequest) (models.ClassWebRequest, error)
+	GetAll() ([]models.ClassWebResponse, error)
+	GetById(classId string) (models.ClassWebResponseDetail, error)
 	AddClass(request models.UserClassWebRequest) (models.UserClassWebRequest, error)
 }
 
@@ -22,7 +22,7 @@ type ClassServiceImpl struct {
 	DB *gorm.DB
 }
 
-func (c *ClassServiceImpl) Create(request models.ClassWebRequest) (models.Class, error) {
+func (c *ClassServiceImpl) Create(request models.ClassWebRequest) (models.ClassWebRequest, error) {
 	var class models.Class
 	var userClass models.UserClass
 
@@ -48,23 +48,25 @@ func (c *ClassServiceImpl) Create(request models.ClassWebRequest) (models.Class,
 		return nil
 	})
 
-	return class, errTransaction
+	return request, errTransaction
 }
 
-func (c *ClassServiceImpl) GetAll() ([]models.Class, error) {
+func (c *ClassServiceImpl) GetAll() ([]models.ClassWebResponse, error) {
 	var class []models.Class
+	var response []models.ClassWebResponse
 
-	errModel := c.DB.Model(&class).Find(&class).Error
+	errModel := c.DB.Model(&class).Preload("CreatedBy").Preload("Category").Find(&response).Error
 
-	return class, errModel
+	return response, errModel
 }
 
-func (c *ClassServiceImpl) GetById(classId string) (models.Class, error) {
+func (c *ClassServiceImpl) GetById(classId string) (models.ClassWebResponseDetail, error) {
 	var class models.Class
+	var response models.ClassWebResponseDetail
 
-	errModel := c.DB.Model(&class).First(&class, "id = ?", classId).Error
+	err := c.DB.Model(&class).Preload("CreatedBy").Preload("Category").Preload("Members").First(&response, "id = ?", classId).Error
 
-	return class, errModel
+	return response, err
 }
 
 func (c *ClassServiceImpl) AddClass(request models.UserClassWebRequest) (models.UserClassWebRequest, error) {

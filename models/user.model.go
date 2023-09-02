@@ -31,12 +31,27 @@ type LoginRequest struct {
 	Password string `json:"password" validate:"required"`
 }
 
-type UserResponse struct {
-	ID          uuid.UUID   `json:"id"`
-	Username    string      `json:"username"`
-	Email       string      `json:"email"`
-	Role        string      `json:"role"`
-	ProfileUrl  string      `json:"profile_url"`
-	Classes     []Class     `gorm:"foreignKey:CreatedByID;references:ID" json:"my_teaching_class"`
-	UserClasses []UserClass `gorm:"foreignKey:UserID;references:ID" json:"my_class"`
+type UserWebResponse struct {
+	ID         uuid.UUID `json:"id"`
+	Username   string    `json:"username"`
+	Email      string    `json:"email"`
+	Role       string    `json:"role"`
+	ProfileUrl string    `json:"profile_url"`
+}
+
+func (u *UserWebResponse) TableName() string {
+	return "users"
+}
+
+type UserWebResponseDetail struct {
+	ID         uuid.UUID                     `json:"id"`
+	Username   string                        `json:"username"`
+	Email      string                        `json:"email"`
+	Role       string                        `json:"role"`
+	ProfileUrl string                        `json:"profile_url"`
+	Classes    []ClassWebResponseNoCreatedBy `gorm:"foreignKey:CreatedByID;references:ID" json:"my_teaching_class"`
+}
+
+func (u *UserWebResponseDetail) TableName() string {
+	return "users"
 }

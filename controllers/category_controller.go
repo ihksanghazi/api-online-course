@@ -74,13 +74,7 @@ func (c *CategoryControllerImpl) Create(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	var response models.CategoryResponse
-	response.ID = ResponseCategory.ID
-	response.Name = ResponseCategory.Name
-	response.CreatedAt = ResponseCategory.CreatedAt
-	response.UpdatedAt = ResponseCategory.UpdatedAt
-
-	utils.ResponseJSON(w, http.StatusCreated, "Successfully Created Category", response)
+	utils.ResponseJSON(w, http.StatusCreated, "Successfully Created Category", ResponseCategory)
 }
 
 func (c *CategoryControllerImpl) Update(w http.ResponseWriter, r *http.Request) {
@@ -107,13 +101,7 @@ func (c *CategoryControllerImpl) Update(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	var response models.CategoryResponse
-	response.ID = ResponseCategory.ID
-	response.Name = ResponseCategory.Name
-	response.CreatedAt = ResponseCategory.CreatedAt
-	response.UpdatedAt = ResponseCategory.UpdatedAt
-
-	utils.ResponseJSON(w, http.StatusOK, "Successfully Updated Category", response)
+	utils.ResponseJSON(w, http.StatusOK, "Successfully Updated Category", ResponseCategory)
 }
 
 func (c *CategoryControllerImpl) Delete(w http.ResponseWriter, r *http.Request) {
